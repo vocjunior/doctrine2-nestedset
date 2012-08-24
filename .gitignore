@@ -1,2 +1,16 @@
+# Vendors
 vendor/
+
+# Tests
 tests/DoctrineExtensions/NestedSet/Proxies/
+
+# OS X
+*.DS_Store
+
+# Vim
+**.sw*
+*~
+
+# IDEs
+.project
+.idea
