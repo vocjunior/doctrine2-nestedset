@@ -1,9 +1,9 @@
 {
-    "name": "cbsi/doctrine2-nestedset",
+    "name": "vocjunior/doctrine2-nestedset",
     "type": "library",
     "description": "This Doctrine2 extension implements the nested set model (modified pre-order tree traversal algorithm) for Doctrine2. ",
     "keywords": ["doctrine2", "extentions", "nested set"],
-    "homepage": "https://github.com/cbsi/doctrine2-nestedset",
+    "homepage": "https://github.com/vocjunior/doctrine2-nestedset",
     "license": "GPL 2.1",
 
     "authors": [
@@ -14,11 +14,15 @@
         {
             "name": "Contributors",
             "homepage": "https://github.com/cbsi/doctrine2-nestedset/graphs/contributors"
+        },
+        {
+            "name": "Contributors",
+            "homepage": "https://github.com/vocjunior/doctrine2-nestedset/graphs/contributors"
         }
     ],
 
     "require": {
-        "php": ">=5.3.2"
+        "php": ">=5.4"
     },
 
     "minimum-stability": "beta",
