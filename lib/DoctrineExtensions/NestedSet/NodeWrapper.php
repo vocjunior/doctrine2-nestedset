@@ -1682,4 +1682,33 @@ class NodeWrapper implements Node
     {
         return $this->getNode()->setRootValue($root);
     }
+
+    /**
+     * To avoid PDO exception, the property 'manager' cannot be serialized
+     * If you need the manager after unserialize the object, you MUST call the attachManager() method in the current wrapper
+     * @return array
+     */
+    function __sleep() {
+        return [
+            'node',
+            'parent',
+            'ancestors',
+            'descendants',
+            'children',
+            'level',
+            'outlineNumbers',
+        ];
+    }
+
+    /**
+     * Attach a {@see \DoctrineExtensions\NestedSet\Manager} to the current wrapper
+     * This method is useful after wakeup a serialized object
+     * @param Manager $manager
+     */
+    public function attachManager(Manager $manager) {
+        if (empty($this->manager)) {
+            $this->manager = $manager;
+        }
+    }
+
 }
