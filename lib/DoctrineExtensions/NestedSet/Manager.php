@@ -35,10 +35,7 @@ class Manager
     /**
      * Initializes a new NestedSet Manager.
      *
-     * @param string|Doctrine\ORM\Mapping\ClassMetadata $clazz the fully qualified entity class name
-     *   or a ClassMetadata object representing the class of nodes to be managed
-     *   by this manager
-     * @param Doctrine\ORM\EntityManager $em The EntityManager to use.
+     * @param Config $config
      */
     public function __construct(Config $config)
     {
@@ -276,6 +273,51 @@ class Manager
         return $this->wrapNode($node);
     }
 
+    /**
+     * Recalculate tree left/right values
+     *
+     * @param NodeWrapper $root
+     *
+     * @return NodeWrapper
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
+     */
+    public function recalculateTree(NodeWrapper $root)
+    {
+        $em = $this->getEntityManager();
+
+        $em->getConnection()->beginTransaction();
+        try {
+            $this->updateRecursively($root);
+
+            $em->flush();
+            $em->getConnection()->commit();
+
+            return $root;
+
+        } catch (\Exception $e) {
+            $em->getConnection()->rollback();
+            $em->close();
+            throw $e;
+        }
+    }
+
+    /**
+     * @param NodeWrapper $node
+     * @param int         &$leftValue
+     */
+    protected function updateRecursively(NodeWrapper $node, &$leftValue = 1)
+    {
+        $node->setLeftValue($leftValue);
+
+        foreach ($node->getChildren() as $child) {
+            $leftValue++;
+            $this->updateRecursively($child, $leftValue);
+        }
+
+        $rightValue = ++$leftValue;
+        $node->setRightValue($rightValue);
+    }
 
     /**
      * wraps the node using the NodeWrapper class
@@ -313,7 +355,7 @@ class Manager
     /**
      * Returns the Doctrine entity manager associated with this Manager
      *
-     * @return Doctrine\ORM\EntityManager
+     * @return \Doctrine\ORM\EntityManager
      */
     public function getEntityManager()
     {

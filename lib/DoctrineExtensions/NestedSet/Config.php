@@ -145,7 +145,7 @@ class Config
     /**
      * Returns the Doctrine entity manager associated with this Manager
      *
-     * @return Doctrine\ORM\EntityManager
+     * @return \Doctrine\ORM\EntityManager
      */
     public function getEntityManager()
     {
