@@ -384,49 +384,51 @@ class NodeWrapper implements Node
             if(!$this->isRoot())
             {
                 $ancestors = $this->getAncestors();
-                $root = $ancestors[0];
+                $root = isset($ancestors[0]) ? $ancestors[0] : null;
 
-                $rootDescendants = $root->getDescendants(count($ancestors));
+                if ($root) {
+                    $rootDescendants = $root->getDescendants(count($ancestors));
 
-                $siblingNumber = 1;
-                $level = 1;
-                $pathLevel = 1;
-                $stack = array();
-                foreach($rootDescendants as $wrapper)
-                {
-                    $parent = end($stack);
-                    while($parent && $wrapper->getLeftValue() > $parent->getRightValue())
+                    $siblingNumber = 1;
+                    $level = 1;
+                    $pathLevel = 1;
+                    $stack = array();
+                    foreach($rootDescendants as $wrapper)
                     {
-                        array_pop($stack);
                         $parent = end($stack);
-                        $level--;
-                    }
-
-                    if($wrapper->getLeftValue() <= $this->getLeftValue() && $wrapper->getRightValue() >= $this->getRightValue())
-                    {
-                        // On path
-
-                        if($wrapper->isEqualTo($this))
+                        while($parent && $wrapper->getLeftValue() > $parent->getRightValue())
                         {
-                            $numbers[] = $siblingNumber;
-                            break;
+                            array_pop($stack);
+                            $parent = end($stack);
+                            $level--;
                         }
-                        else if($wrapper->isEqualTo($ancestors[$pathLevel]))
-                        {
-                            $numbers[] = $siblingNumber;
-                            $siblingNumber = 1;
-                            $pathLevel++;
-                        }
-                    }
-                    else if($pathLevel == $level)
-                    {
-                        $siblingNumber++;
-                    }
 
-                    if($wrapper->hasChildren())
-                    {
-                        array_push($stack, $wrapper);
-                        $level++;
+                        if($wrapper->getLeftValue() <= $this->getLeftValue() && $wrapper->getRightValue() >= $this->getRightValue())
+                        {
+                            // On path
+
+                            if($wrapper->isEqualTo($this))
+                            {
+                                $numbers[] = $siblingNumber;
+                                break;
+                            }
+                            else if($wrapper->isEqualTo($ancestors[$pathLevel]))
+                            {
+                                $numbers[] = $siblingNumber;
+                                $siblingNumber = 1;
+                                $pathLevel++;
+                            }
+                        }
+                        else if($pathLevel == $level)
+                        {
+                            $siblingNumber++;
+                        }
+
+                        if($wrapper->hasChildren())
+                        {
+                            array_push($stack, $wrapper);
+                            $level++;
+                        }
                     }
                 }
             }
